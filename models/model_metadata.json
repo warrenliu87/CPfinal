@@ -1,0 +1,77 @@
+{
+  "model_type": "XGBoostRegressor",
+  "target": "lifetime_bath_s",
+  "features": [
+    "die_matrix",
+    "lifetime_2nd_strike_s",
+    "oee_cycle_time_s"
+  ],
+  "fillna_strategy": {
+    "oee_cycle_time_s": {
+      "method": "median",
+      "value": 13.70980000000009
+    }
+  },
+  "train_test_split": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "stratified_by": "die_matrix"
+  },
+  "hyperparameters": {
+    "n_estimators": 200,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "objective": "reg:squarederror"
+  },
+  "metrics_overall": {
+    "rmse_s": 1.8546240106541605,
+    "mae_s": 0.9369563339768131,
+    "r2": 0.6621578950828282
+  },
+  "metrics_per_matrix": [
+    {
+      "die_matrix": 4974,
+      "n_samples": 3106,
+      "rmse_s": 0.8966,
+      "mae_s": 0.4631,
+      "r2": 0.7427
+    },
+    {
+      "die_matrix": 5052,
+      "n_samples": 4177,
+      "rmse_s": 1.5146,
+      "mae_s": 0.7669,
+      "r2": 0.6875
+    },
+    {
+      "die_matrix": 5090,
+      "n_samples": 16336,
+      "rmse_s": 2.0746,
+      "mae_s": 1.1219,
+      "r2": 0.626
+    },
+    {
+      "die_matrix": 5091,
+      "n_samples": 4462,
+      "rmse_s": 1.7841,
+      "mae_s": 0.7487,
+      "r2": 0.666
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "lifetime_2nd_strike_s",
+      "importance": 0.7462121844291687
+    },
+    {
+      "feature": "oee_cycle_time_s",
+      "importance": 0.1774965077638626
+    },
+    {
+      "feature": "die_matrix",
+      "importance": 0.0762912854552269
+    }
+  ]
+}
