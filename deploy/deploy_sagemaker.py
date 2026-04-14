@@ -11,8 +11,11 @@ Usage:
 
 import argparse
 import json
+import tarfile
+import tempfile
 from pathlib import Path
 
+import boto3
 
 MODEL_DIR = Path(__file__).resolve().parent.parent / "models"
 MODEL_FILE = MODEL_DIR / "xgboost_bath_predictor.json"
@@ -32,7 +35,23 @@ def package_model(model_path: Path, output_dir: Path) -> Path:
     Returns:
         Path to the created .tar.gz file.
     """
-    # TODO: implement
+    if not model_path.exists():
+        raise FileNotFoundError(f"Model file not found: {model_path}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    tar_path = output_dir / "model.tar.gz"
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = Path(tmpdir)
+        staged_model = tmpdir_path / "xgboost-model"
+
+        # SageMaker built-in XGBoost expects this exact filename
+        staged_model.write_bytes(model_path.read_bytes())
+
+        with tarfile.open(tar_path, "w:gz") as tar:
+            tar.add(staged_model, arcname="xgboost-model")
+
+    return tar_path
     raise NotImplementedError
 
 
@@ -47,7 +66,13 @@ def upload_to_s3(local_path: Path, bucket: str, key: str) -> str:
     Returns:
         Full S3 URI (s3://bucket/key).
     """
-    # TODO: implement
+    if not local_path.exists():
+        raise FileNotFoundError(f"Local file not found: {local_path}")
+
+    s3 = boto3.client("s3")
+    s3.upload_file(str(local_path), bucket, key)
+
+    return f"s3://{bucket}/{key}"
     raise NotImplementedError
 
 
